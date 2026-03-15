@@ -1,0 +1,138 @@
+{
+  "Personal Details": {
+    "Name": "Jordan Lee",
+    "Street": "1550 Market Street",
+    "Town": "San Francisco",
+    "State": "CA",
+    "Zipcode": "94103"
+  },
+  "Public Information": {
+    "phone": "+1-555-781-4421",
+    "email": "jordan.lee@example.com",
+    "linkedin": "https://www.linkedin.com/in/jordanlee",
+    "github": "https://github.com/jordanlee"
+  },
+  "Education": [
+    {
+      "university": "University of California, Berkeley",
+      "start": "2016-08",
+      "end": "2020-05",
+      "city": "Berkeley",
+      "state": "CA",
+      "courseType": "bachelors",
+      "courseName": "Computer Science",
+      "coursework": [
+        "Data Structures",
+        "Algorithms",
+        "Machine Learning",
+        "Databases",
+        "Computer Architecture"
+      ]
+    },
+    {
+      "university": "Stanford University",
+      "start": "2021-09",
+      "end": "2023-06",
+      "city": "Stanford",
+      "state": "CA",
+      "courseType": "masters",
+      "courseName": "Artificial Intelligence",
+      "coursework": [
+        "Deep Learning",
+        "Natural Language Processing",
+        "Reinforcement Learning",
+        "Computer Vision"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "companyName": "CloudScale Inc.",
+      "role": "Senior Software Engineer",
+      "start": "2023-07",
+      "end": "present",
+      "city": "San Mateo",
+      "state": "CA",
+      "work": [
+        "Led backend architecture design for scalable microservices",
+        "Mentored junior engineers and conducted code reviews",
+        "Improved system reliability through observability and monitoring"
+      ]
+    },
+    {
+      "companyName": "DataForge",
+      "role": "Software Engineer",
+      "start": "2020-07",
+      "end": "2023-06",
+      "city": "Palo Alto",
+      "state": "CA",
+      "work": [
+        "Built data pipelines using Python and Apache Airflow",
+        "Developed APIs for analytics platforms",
+        "Worked closely with product managers to define requirements"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "InsightHub",
+      "stack": ["React", "TypeScript", "Node.js", "PostgreSQL"],
+      "month": "02",
+      "year": "2024"
+    },
+    {
+      "name": "SmartResume",
+      "stack": ["Python", "Django", "NLP", "spaCy"],
+      "month": "08",
+      "year": "2022"
+    },
+    {
+      "name": "IoTMonitor",
+      "stack": ["Go", "MQTT", "Docker", "Prometheus"],
+      "month": "11",
+      "year": "2021"
+    }
+  ],
+  "skills": {
+    "languages": [
+      "JavaScript",
+      "TypeScript",
+      "Python",
+      "Go",
+      "Java"
+    ],
+    "tools": [
+      "Git",
+      "Docker",
+      "Kubernetes",
+      "Terraform",
+      "Jenkins"
+    ],
+    "more": [
+      "React",
+      "Node.js",
+      "Django",
+      "PostgreSQL",
+      "Microservices",
+      "Machine Learning"
+    ]
+  },
+  "leadership": [
+    {
+      "organisationName": "Women in Tech Network",
+      "work": [
+        "Organized monthly speaker sessions",
+        "Managed partnerships with local tech companies",
+        "Mentored early-career professionals"
+      ]
+    },
+    {
+      "organisationName": "Open Source Contributors Group",
+      "work": [
+        "Led community-driven open source initiatives",
+        "Reviewed and merged pull requests",
+        "Coordinated release planning"
+      ]
+    }
+  ]
+}

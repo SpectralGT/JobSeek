@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Application Details</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --border: #2d3a4d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --accent-hover: #79b8ff;
+      --success: #3fb950;
+      --danger: #f85149;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+    }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    section h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 1rem 0;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .grid-2.full { grid-template-columns: 1fr; }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+    label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    select {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 0.875rem;
+      font-family: inherit;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2);
+    }
+    .list-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    .list-item h3 {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 0 0 0.75rem 0;
+    }
+    .array-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+    .array-row input { flex: 1; }
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: var(--border); color: var(--text); }
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+    .btn-danger:hover { background: rgba(248, 81, 73, 0.15); }
+    .btn-sm { padding: 0.35rem 0.6rem; font-size: 0.75rem; }
+    .add-btn { margin-top: 0.5rem; }
+    .remove-item { margin-left: auto; }
+    .output-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .output-actions { display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    #jsonOutput {
+      width: 100%;
+      min-height: 200px;
+      padding: 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 0.8rem;
+      font-family: inherit;
+      resize: vertical;
+      white-space: pre;
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .tag-list input.new-tag {
+      width: 140px;
+      margin: 0;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.5rem;
+      background: var(--border);
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .tag button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+      font-size: 1rem;
+      line-height: 1;
+    }
+    .tag button:hover { color: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Job Application Details</h1>
+    <p class="subtitle">Fill in every field. Output matches userData.json structure.</p>
+
+    <form id="appForm">
+      <!-- Personal Details -->
+      <section>
+        <h2>Personal Details</h2>
+        <div class="grid-2">
+          <div>
+            <label>Name</label>
+            <input type="text" name="personal.name" required />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label>Street</label>
+            <input type="text" name="personal.street" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label>Town</label>
+            <input type="text" name="personal.town" />
+          </div>
+          <div>
+            <label>State</label>
+            <input type="text" name="personal.state" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label>Zipcode</label>
+            <input type="text" name="personal.zipcode" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Public Information -->
+      <section>
+        <h2>Public Information</h2>
+        <div class="grid-2">
+          <div>
+            <label>Phone</label>
+            <input type="tel" name="public.phone" />
+          </div>
+          <div>
+            <label>Email</label>
+            <input type="email" name="public.email" />
+          </div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label>LinkedIn</label>
+            <input type="url" name="public.linkedin" placeholder="https://" />
+          </div>
+          <div>
+            <label>GitHub</label>
+            <input type="url" name="public.github" placeholder="https://" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Education -->
+      <section id="educationSection">
+        <h2>Education</h2>
+        <div id="educationList"></div>
+        <button type="button" class="btn btn-ghost add-btn" id="addEducation">+ Add education</button>
+      </section>
+
+      <!-- Experience -->
+      <section id="experienceSection">
+        <h2>Experience</h2>
+        <div id="experienceList"></div>
+        <button type="button" class="btn btn-ghost add-btn" id="addExperience">+ Add experience</button>
+      </section>
+
+      <!-- Projects -->
+      <section id="projectsSection">
+        <h2>Projects</h2>
+        <div id="projectsList"></div>
+        <button type="button" class="btn btn-ghost add-btn" id="addProject">+ Add project</button>
+      </section>
+
+      <!-- Skills -->
+      <section>
+        <h2>Skills</h2>
+        <div class="grid-2">
+          <div>
+            <label>Languages (add one by one)</label>
+            <div class="tag-list" id="languagesList">
+              <input type="text" class="new-tag" placeholder="e.g. JavaScript" data-array="languages" />
+            </div>
+          </div>
+          <div>
+            <label>Tools</label>
+            <div class="tag-list" id="toolsList">
+              <input type="text" class="new-tag" placeholder="e.g. Git" data-array="tools" />
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 1rem;">
+          <label>More (frameworks, etc.)</label>
+          <div class="tag-list" id="moreList">
+            <input type="text" class="new-tag" placeholder="e.g. React" data-array="more" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Leadership -->
+      <section id="leadershipSection">
+        <h2>Leadership</h2>
+        <div id="leadershipList"></div>
+        <button type="button" class="btn btn-ghost add-btn" id="addLeadership">+ Add leadership</button>
+      </section>
+
+      <div class="output-section">
+        <h2>JSON Output</h2>
+        <div class="output-actions">
+          <button type="button" class="btn btn-primary" id="generateJson">Generate JSON</button>
+          <button type="button" class="btn btn-ghost" id="copyJson">Copy to clipboard</button>
+          <button type="button" class="btn btn-ghost" id="downloadJson">Download userData.json</button>
+        </div>
+        <textarea id="jsonOutput" readonly placeholder="Click 'Generate JSON' to build output from the form."></textarea>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // --- Data structure matching userData.json
+    function buildOutput() {
+      const personal = {
+        "Name": document.querySelector('[name="personal.name"]').value.trim(),
+        "Street": document.querySelector('[name="personal.street"]').value.trim(),
+        "Town": document.querySelector('[name="personal.town"]').value.trim(),
+        "State": document.querySelector('[name="personal.state"]').value.trim(),
+        "Zipcode": document.querySelector('[name="personal.zipcode"]').value.trim()
+      };
+      const publicInfo = {
+        "phone": document.querySelector('[name="public.phone"]').value.trim(),
+        "email": document.querySelector('[name="public.email"]').value.trim(),
+        "linkedin": document.querySelector('[name="public.linkedin"]').value.trim(),
+        "github": document.querySelector('[name="public.github"]').value.trim()
+      };
+      const education = [];
+      document.querySelectorAll('.education-block').forEach(block => {
+        const coursework = [];
+        block.querySelectorAll('.coursework-item').forEach(i => {
+          const v = i.querySelector('input').value.trim();
+          if (v) coursework.push(v);
+        });
+        education.push({
+          university: block.querySelector('[name="edu.university"]').value.trim(),
+          start: block.querySelector('[name="edu.start"]').value.trim() || null,
+          end: block.querySelector('[name="edu.end"]').value.trim() || null,
+          city: block.querySelector('[name="edu.city"]').value.trim(),
+          state: block.querySelector('[name="edu.state"]').value.trim(),
+          courseType: block.querySelector('[name="edu.courseType"]').value.trim() || null,
+          courseName: block.querySelector('[name="edu.courseName"]').value.trim(),
+          coursework: coursework.length ? coursework : []
+        });
+      });
+      const experience = [];
+      document.querySelectorAll('.experience-block').forEach(block => {
+        const work = [];
+        block.querySelectorAll('.work-item').forEach(i => {
+          const v = i.querySelector('input').value.trim();
+          if (v) work.push(v);
+        });
+        experience.push({
+          companyName: block.querySelector('[name="exp.companyName"]').value.trim(),
+          role: block.querySelector('[name="exp.role"]').value.trim(),
+          start: block.querySelector('[name="exp.start"]').value.trim() || null,
+          end: block.querySelector('[name="exp.end"]').value.trim() || null,
+          city: block.querySelector('[name="exp.city"]').value.trim(),
+          state: block.querySelector('[name="exp.state"]').value.trim(),
+          work: work.length ? work : []
+        });
+      });
+      const projects = [];
+      document.querySelectorAll('.project-block').forEach(block => {
+        const stackEl = block.querySelector('[name="proj.stack"]');
+        const stack = stackEl ? (stackEl.value ? stackEl.value.split(',').map(s => s.trim()).filter(Boolean) : []) : [];
+        projects.push({
+          name: block.querySelector('[name="proj.name"]').value.trim(),
+          stack,
+          month: block.querySelector('[name="proj.month"]').value.trim() || null,
+          year: block.querySelector('[name="proj.year"]').value.trim() || null
+        });
+      });
+      const languages = getTags('languages');
+      const tools = getTags('tools');
+      const more = getTags('more');
+      const skills = { languages, tools, more };
+      const leadership = [];
+      document.querySelectorAll('.leadership-block').forEach(block => {
+        const work = [];
+        block.querySelectorAll('.leadership-work-item').forEach(i => {
+          const v = i.querySelector('input').value.trim();
+          if (v) work.push(v);
+        });
+        leadership.push({
+          organisationName: block.querySelector('[name="lead.orgName"]').value.trim(),
+          work: work.length ? work : []
+        });
+      });
+
+      return {
+        "Personal Details": personal,
+        "Public Information": publicInfo,
+        "Education": education,
+        "experience": experience,
+        "projects": projects,
+        "skills": skills,
+        "leadership": leadership
+      };
+    }
+
+    function getTags(kind) {
+      const list = document.getElementById(kind + 'List');
+      if (!list) return [];
+      return Array.from(list.querySelectorAll('.tag')).map(t => t.textContent.replace(/\u00D7$/, '').trim()).filter(Boolean);
+    }
+
+    // --- Education
+    let educationIndex = 0;
+    function addEducationBlock() {
+      const id = educationIndex++;
+      const html = `
+        <div class="list-item education-block" data-id="${id}">
+          <h3>Education #${id + 1}</h3>
+          <div class="grid-2">
+            <div class="full">
+              <label>University</label>
+              <input type="text" name="edu.university" />
+            </div>
+          </div>
+          <div class="grid-2">
+            <div><label>Start (YYYY-MM)</label><input type="text" name="edu.start" placeholder="2016-08" /></div>
+            <div><label>End (YYYY-MM)</label><input type="text" name="edu.end" placeholder="2020-05" /></div>
+          </div>
+          <div class="grid-2">
+            <div><label>City</label><input type="text" name="edu.city" /></div>
+            <div><label>State</label><input type="text" name="edu.state" /></div>
+          </div>
+          <div class="grid-2">
+            <div><label>Course type</label>
+              <select name="edu.courseType">
+                <option value="">—</option>
+                <option value="bachelors">Bachelors</option>
+                <option value="masters">Masters</option>
+                <option value="phd">PhD</option>
+                <option value="associate">Associate</option>
+                <option value="certificate">Certificate</option>
+              </select>
+            </div>
+            <div><label>Course name</label><input type="text" name="edu.courseName" placeholder="e.g. Computer Science" /></div>
+          </div>
+          <label style="margin-top: 0.75rem;">Coursework (one per line)</label>
+          <div class="coursework-list">
+            <div class="array-row coursework-item">
+              <input type="text" placeholder="e.g. Data Structures" />
+              <button type="button" class="btn btn-ghost btn-sm remove-item remove-coursework">Remove</button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm add-btn add-coursework">+ Add coursework</button>
+          <button type="button" class="btn btn-danger btn-sm add-btn remove-block">Remove this education</button>
+        </div>
+      `;
+      document.getElementById('educationList').insertAdjacentHTML('beforeend', html);
+      const block = document.getElementById('educationList').lastElementChild;
+      block.querySelector('.remove-block').onclick = () => block.remove();
+      block.querySelector('.add-coursework').onclick = () => {
+        const row = document.createElement('div');
+        row.className = 'array-row coursework-item';
+        row.innerHTML = '<input type="text" placeholder="e.g. Algorithms" /><button type="button" class="btn btn-ghost btn-sm remove-item remove-coursework">Remove</button>';
+        row.querySelector('.remove-coursework').onclick = () => row.remove();
+        block.querySelector('.coursework-list').appendChild(row);
+      };
+      block.querySelectorAll('.remove-coursework').forEach(btn => btn.onclick = () => btn.closest('.coursework-item').remove());
+    }
+
+    // --- Experience
+    let experienceIndex = 0;
+    function addExperienceBlock() {
+      const id = experienceIndex++;
+      const html = `
+        <div class="list-item experience-block" data-id="${id}">
+          <h3>Experience #${id + 1}</h3>
+          <div class="grid-2">
+            <div><label>Company name</label><input type="text" name="exp.companyName" /></div>
+            <div><label>Role</label><input type="text" name="exp.role" /></div>
+          </div>
+          <div class="grid-2">
+            <div><label>Start (YYYY-MM)</label><input type="text" name="exp.start" placeholder="2020-07" /></div>
+            <div><label>End</label><input type="text" name="exp.end" placeholder="2023-06 or present" /></div>
+          </div>
+          <div class="grid-2">
+            <div><label>City</label><input type="text" name="exp.city" /></div>
+            <div><label>State</label><input type="text" name="exp.state" /></div>
+          </div>
+          <label style="margin-top: 0.75rem;">Work / bullet points (one per line)</label>
+          <div class="work-list">
+            <div class="array-row work-item">
+              <input type="text" placeholder="e.g. Led backend architecture..." />
+              <button type="button" class="btn btn-ghost btn-sm remove-item remove-work">Remove</button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm add-btn add-work">+ Add bullet</button>
+          <button type="button" class="btn btn-danger btn-sm add-btn remove-block">Remove this experience</button>
+        </div>
+      `;
+      document.getElementById('experienceList').insertAdjacentHTML('beforeend', html);
+      const block = document.getElementById('experienceList').lastElementChild;
+      block.querySelector('.remove-block').onclick = () => block.remove();
+      block.querySelector('.add-work').onclick = () => {
+        const row = document.createElement('div');
+        row.className = 'array-row work-item';
+        row.innerHTML = '<input type="text" placeholder="Bullet point" /><button type="button" class="btn btn-ghost btn-sm remove-item remove-work">Remove</button>';
+        row.querySelector('.remove-work').onclick = () => row.remove();
+        block.querySelector('.work-list').appendChild(row);
+      };
+      block.querySelectorAll('.remove-work').forEach(btn => btn.onclick = () => btn.closest('.work-item').remove());
+    }
+
+    // --- Projects
+    let projectIndex = 0;
+    function addProjectBlock() {
+      const id = projectIndex++;
+      const html = `
+        <div class="list-item project-block" data-id="${id}">
+          <h3>Project #${id + 1}</h3>
+          <div class="grid-2">
+            <div><label>Project name</label><input type="text" name="proj.name" /></div>
+            <div><label>Stack (comma-separated)</label><input type="text" name="proj.stack" placeholder="React, TypeScript, Node.js" /></div>
+          </div>
+          <div class="grid-2">
+            <div><label>Month (MM)</label><input type="text" name="proj.month" placeholder="02" maxlength="2" /></div>
+            <div><label>Year (YYYY)</label><input type="text" name="proj.year" placeholder="2024" maxlength="4" /></div>
+          </div>
+          <button type="button" class="btn btn-danger btn-sm add-btn remove-block">Remove this project</button>
+        </div>
+      `;
+      document.getElementById('projectsList').insertAdjacentHTML('beforeend', html);
+      const block = document.getElementById('projectsList').lastElementChild;
+      block.querySelector('.remove-block').onclick = () => block.remove();
+    }
+
+    // --- Leadership
+    let leadershipIndex = 0;
+    function addLeadershipBlock() {
+      const id = leadershipIndex++;
+      const html = `
+        <div class="list-item leadership-block" data-id="${id}">
+          <h3>Leadership #${id + 1}</h3>
+          <div class="grid-2 full">
+            <div>
+              <label>Organisation name</label>
+              <input type="text" name="lead.orgName" />
+            </div>
+          </div>
+          <label style="margin-top: 0.75rem;">Work / bullet points</label>
+          <div class="leadership-work-list">
+            <div class="array-row leadership-work-item">
+              <input type="text" placeholder="e.g. Organized monthly speaker sessions" />
+              <button type="button" class="btn btn-ghost btn-sm remove-item remove-lead-work">Remove</button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm add-btn add-lead-work">+ Add bullet</button>
+          <button type="button" class="btn btn-danger btn-sm add-btn remove-block">Remove this entry</button>
+        </div>
+      `;
+      document.getElementById('leadershipList').insertAdjacentHTML('beforeend', html);
+      const block = document.getElementById('leadershipList').lastElementChild;
+      block.querySelector('.remove-block').onclick = () => block.remove();
+      block.querySelector('.add-lead-work').onclick = () => {
+        const row = document.createElement('div');
+        row.className = 'array-row leadership-work-item';
+        row.innerHTML = '<input type="text" placeholder="Bullet point" /><button type="button" class="btn btn-ghost btn-sm remove-item remove-lead-work">Remove</button>';
+        row.querySelector('.remove-lead-work').onclick = () => row.remove();
+        block.querySelector('.leadership-work-list').appendChild(row);
+      };
+      block.querySelectorAll('.remove-lead-work').forEach(btn => btn.onclick = () => btn.closest('.leadership-work-item').remove());
+    }
+
+    // --- Skills: tag input
+    function initTagInput(containerId, arrayName) {
+      const list = document.getElementById(containerId);
+      const input = list.querySelector('.new-tag');
+      function addTag(value) {
+        if (!value.trim()) return;
+        const tag = document.createElement('span');
+        tag.className = 'tag';
+        tag.appendChild(document.createTextNode(value.trim()));
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('aria-label', 'Remove');
+        btn.textContent = '×';
+        btn.onclick = () => tag.remove();
+        tag.appendChild(btn);
+        list.insertBefore(tag, input);
+        input.value = '';
+      }
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ',') {
+          e.preventDefault();
+          addTag(input.value);
+        }
+      });
+      input.addEventListener('blur', () => { addTag(input.value); });
+    }
+    function getTagsFromContainer(containerId) {
+      const list = document.getElementById(containerId);
+      return Array.from(list.querySelectorAll('.tag')).map(t => t.childNodes[0].textContent.trim()).filter(Boolean);
+    }
+    // Override getTags to use DOM
+    function getTags(kind) {
+      const map = { languages: 'languagesList', tools: 'toolsList', more: 'moreList' };
+      return getTagsFromContainer(map[kind] || (kind + 'List'));
+    }
+
+    // --- Buttons
+    document.getElementById('addEducation').onclick = addEducationBlock;
+    document.getElementById('addExperience').onclick = addExperienceBlock;
+    document.getElementById('addProject').onclick = addProjectBlock;
+    document.getElementById('addLeadership').onclick = addLeadershipBlock;
+
+    document.getElementById('generateJson').onclick = () => {
+      const data = buildOutput();
+      document.getElementById('jsonOutput').value = JSON.stringify(data, null, 2);
+    };
+    document.getElementById('copyJson').onclick = () => {
+      const ta = document.getElementById('jsonOutput');
+      if (!ta.value) { alert('Generate JSON first.'); return; }
+      ta.select();
+      navigator.clipboard.writeText(ta.value).then(() => alert('Copied to clipboard.'));
+    };
+    document.getElementById('downloadJson').onclick = () => {
+      const ta = document.getElementById('jsonOutput');
+      if (!ta.value) { alert('Generate JSON first.'); return; }
+      const blob = new Blob([ta.value], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'userData.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    };
+
+    initTagInput('languagesList', 'languages');
+    initTagInput('toolsList', 'tools');
+    initTagInput('moreList', 'more');
+
+    // One of each to start
+    addEducationBlock();
+    addExperienceBlock();
+    addProjectBlock();
+    addLeadershipBlock();
+  </script>
+</body>
+</html>
