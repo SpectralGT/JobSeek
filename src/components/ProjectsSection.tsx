@@ -1,4 +1,5 @@
 import type { ProjectEntry } from '../types/userData'
+import { TagInput } from './TagInput'
 
 interface Props {
   value: ProjectEntry[];
@@ -16,12 +17,6 @@ export function ProjectsSection({ value, onChange }: Props) {
     onChange(next);
   };
 
-  const setStack = (index: number, raw: string) => {
-    const entry = value[index];
-    const stack = raw ? raw.split(',').map((s) => s.trim()).filter(Boolean) : [];
-    update(index, { ...entry, stack });
-  };
-
   const addEntry = () => onChange([...value, emptyEntry()]);
   const removeEntry = (index: number) => onChange(value.filter((_, i) => i !== index));
 
@@ -31,7 +26,7 @@ export function ProjectsSection({ value, onChange }: Props) {
       {value.map((entry, i) => (
         <div key={i} className="list-item">
           <h3>Project #{i + 1}</h3>
-          <div className="grid-2">
+          <div className="grid-2 full">
             <div>
               <label className="field-label">Project name</label>
               <input
@@ -40,15 +35,14 @@ export function ProjectsSection({ value, onChange }: Props) {
                 onChange={(e) => update(i, { ...entry, name: e.target.value })}
               />
             </div>
-            <div>
-              <label className="field-label">Stack (comma-separated)</label>
-              <input
-                type="text"
-                value={entry.stack.join(', ')}
-                onChange={(e) => setStack(i, e.target.value)}
-                placeholder="React, TypeScript, Node.js"
-              />
-            </div>
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <TagInput
+              label="Stack (add one by one)"
+              placeholder="e.g. React"
+              value={entry.stack}
+              onChange={(stack) => update(i, { ...entry, stack })}
+            />
           </div>
           <div className="grid-2">
             <div>

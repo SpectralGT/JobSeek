@@ -16,10 +16,10 @@ function defaultPublic(): PublicInformation {
   return { phone: '', email: '', linkedin: '', github: '' };
 }
 function defaultEducation(): EducationEntry {
-  return { university: '', start: '', end: '', city: '', state: '', courseType: '', courseName: '', coursework: [''] };
+  return { university: '', start: '', end: '', city: '', state: '', courseType: '', courseName: '', coursework: [] };
 }
 function defaultExperience(): ExperienceEntry {
-  return { companyName: '', role: '', start: '', end: '', city: '', state: '', work: [''] };
+  return { companyName: '', role: '', start: '', end: '', city: '', state: '', work: [] };
 }
 function defaultProject(): ProjectEntry {
   return { name: '', stack: [], month: '', year: '' };
@@ -28,7 +28,7 @@ function defaultSkills(): Skills {
   return { languages: [], tools: [], more: [] };
 }
 function defaultLeadership(): LeadershipEntry {
-  return { organisationName: '', work: [''] };
+  return { organisationName: '', work: [] };
 }
 
 function buildUserData(form: FormState): UserData {
@@ -75,6 +75,7 @@ const initialForm: FormState = {
 export default function App() {
   const [form, setForm] = useState<FormState>(initialForm);
   const [jsonString, setJsonString] = useState('');
+  const [isDark, setIsDark] = useState(true);
 
   const update = useCallback(<K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -85,18 +86,32 @@ export default function App() {
     setJsonString(JSON.stringify(data, null, 2));
   }, [form]);
 
+  const toggleTheme = useCallback(() => {
+    setIsDark((prev) => !prev);
+    document.documentElement.classList.toggle('light-mode');
+  }, []);
+
   return (
     <div className="container">
-      <h1>Job Application Details</h1>
-      <p className="subtitle">Fill in every field. Output matches userData.json structure.</p>
+      <div className="header">
+        <div>
+          <h1>Job Application Details</h1>
+          <p className="subtitle">Fill in every field. Output matches userData.json structure.</p>
+        </div>
+        <button className="btn-theme" onClick={toggleTheme} title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
+          {isDark ? '☀️' : '🌙'}
+        </button>
+      </div>
 
-      <PersonalDetailsSection value={form.personal} onChange={(v) => update('personal', v)} />
-      <PublicInfo value={form.public} onChange={(v) => update('public', v)} />
-      <EducationSection value={form.education} onChange={(v) => update('education', v)} />
-      <ExperienceSection value={form.experience} onChange={(v) => update('experience', v)} />
-      <ProjectsSection value={form.projects} onChange={(v) => update('projects', v)} />
-      <SkillsSection value={form.skills} onChange={(v) => update('skills', v)} />
-      <LeadershipSection value={form.leadership} onChange={(v) => update('leadership', v)} />
+      <div className="form-grid">
+        <PersonalDetailsSection value={form.personal} onChange={(v) => update('personal', v)} />
+        <PublicInfo value={form.public} onChange={(v) => update('public', v)} />
+        <EducationSection value={form.education} onChange={(v) => update('education', v)} />
+        <ExperienceSection value={form.experience} onChange={(v) => update('experience', v)} />
+        <ProjectsSection value={form.projects} onChange={(v) => update('projects', v)} />
+        <SkillsSection value={form.skills} onChange={(v) => update('skills', v)} />
+        <LeadershipSection value={form.leadership} onChange={(v) => update('leadership', v)} />
+      </div>
 
       <JsonOutput jsonString={jsonString} onGenerate={generateJson} />
     </div>

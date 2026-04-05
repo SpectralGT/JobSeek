@@ -1,4 +1,5 @@
 import type { EducationEntry, CourseType } from '../types/userData'
+import { TagInput } from './TagInput'
 
 interface Props {
   value: EducationEntry[];
@@ -23,7 +24,7 @@ function emptyEntry(): EducationEntry {
     state: '',
     courseType: '',
     courseName: '',
-    coursework: [''],
+    coursework: [],
   };
 }
 
@@ -32,25 +33,6 @@ export function EducationSection({ value, onChange }: Props) {
     const next = [...value];
     next[index] = entry;
     onChange(next);
-  };
-
-  const addCoursework = (entryIndex: number) => {
-    const entry = value[entryIndex];
-    update(entryIndex, { ...entry, coursework: [...entry.coursework, ''] });
-  };
-
-  const updateCoursework = (entryIndex: number, courseworkIndex: number, val: string) => {
-    const entry = value[entryIndex];
-    const next = [...entry.coursework];
-    next[courseworkIndex] = val;
-    update(entryIndex, { ...entry, coursework: next });
-  };
-
-  const removeCoursework = (entryIndex: number, courseworkIndex: number) => {
-    const entry = value[entryIndex];
-    if (entry.coursework.length <= 1) return;
-    const next = entry.coursework.filter((_, i) => i !== courseworkIndex);
-    update(entryIndex, { ...entry, coursework: next });
   };
 
   const addEntry = () => onChange([...value, emptyEntry()]);
@@ -134,29 +116,14 @@ export function EducationSection({ value, onChange }: Props) {
               />
             </div>
           </div>
-          <label className="field-label" style={{ marginTop: '0.75rem' }}>
-            Coursework (one per line)
-          </label>
-          {entry.coursework.map((item, j) => (
-            <div key={j} className="array-row">
-              <input
-                type="text"
-                value={item}
-                onChange={(e) => updateCoursework(i, j, e.target.value)}
-                placeholder="e.g. Data Structures"
-              />
-              <button
-                type="button"
-                className="btn btn-ghost btn-sm remove-item"
-                onClick={() => removeCoursework(i, j)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-          <button type="button" className="btn btn-ghost btn-sm add-btn" onClick={() => addCoursework(i)}>
-            + Add coursework
-          </button>
+          <div style={{ marginTop: '1rem' }}>
+            <TagInput
+              label="Coursework (add one by one)"
+              placeholder="e.g. Data Structures"
+              value={entry.coursework}
+              onChange={(coursework) => update(i, { ...entry, coursework })}
+            />
+          </div>
           <button type="button" className="btn btn-danger btn-sm add-btn" onClick={() => removeEntry(i)}>
             Remove this education
           </button>
